@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.example.mvm">
+
+    <application
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
+        <activity android:name=".AssignLocationScreen"></activity>
+        <activity android:name=".OrderDetailsForOperator"/>
+        <activity android:name=".UpdateProfile" />
+        <activity android:name=".ViewOrders" />
+        <activity android:name=".Checkout" />
+        <activity android:name=".OrderDetails" />
+        <activity android:name=".SearchVendingVehicleManager" />
+        <activity android:name=".SearchVendingVehicleUser" />
+        <activity android:name=".ChangePassword" />
+        <activity android:name=".ViewVehicleInventoryManager" />
+        <activity android:name=".ViewVehicleInventoryUser" />
+        <activity android:name=".ViewCurrentOrders" />
+        <activity android:name=".ViewProfile" />
+        <activity android:name=".ViewSchedule" />
+        <activity android:name=".ViewOperators" />
+        <activity android:name=".AssignOperatorScreen" />
+        <activity android:name=".DialogBoxActivity" />
+        <activity android:name=".ViewVehicleInventoryOperator" />
+        <activity android:name=".ViewAvailableVehiclesActivity" />
+        <activity android:name=".VehicleOperatorDetailsActivity" />
+        <activity android:name=".ContactUsActivity" />
+        <activity android:name=".ViewCart" />
+        <activity android:name=".Register" />
+        <activity android:name=".ForgotPasswordScreen" />
+        <activity android:name=".OperatorHomeScreen" />
+        <activity android:name=".UserHomeScreen" />
+        <activity android:name=".ManagerHomeScreen" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

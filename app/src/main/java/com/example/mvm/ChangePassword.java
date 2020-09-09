@@ -1,0 +1,120 @@
+package com.example.mvm;
+
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Map;
+
+public class ChangePassword extends AppCompatActivity {
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.parent_menu, menu);
+        return true;
+    }
+    AlertDialog.Builder alertBuilder;
+    public void onLogoutClick(final Context context) {
+        alertBuilder = new AlertDialog.Builder(ChangePassword.this);
+        alertBuilder.setTitle("Confirm Logout");
+        alertBuilder.setMessage("Are you sure you want to logout ?");
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(context,MainActivity.class));
+                dialogInterface.dismiss();
+            }
+        });
+        alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                onLogoutClick(getApplicationContext());
+                return true;
+            case R.id.cart:
+                startActivity(new Intent(this,ViewCart.class));
+                return true;
+            case R.id.home:
+                startActivity(new Intent(this,UserHomeScreen.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_change_password);
+        SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+        Map sessionMap = sharedpreferences.getAll();
+        if (sessionMap == null || sessionMap.isEmpty())
+            startActivity(new Intent(this,MainActivity.class));
+    }
+    public void change_password(View view) {
+        alertBuilder = new AlertDialog.Builder(ChangePassword.this);
+        alertBuilder.setTitle("Confirmation");
+        alertBuilder.setMessage("Are you sure you want to change the password ?");
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                UserDAO db = new UserDAO(getApplicationContext());
+                SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+                Map sessionMap = sharedpreferences.getAll();
+                String currentPassword = ((EditText) findViewById(R.id.oldpasswordText)).getText().toString().trim();
+
+                String username = sessionMap.get("username").toString();
+                if (db.checkPassword(username, currentPassword)) {
+                    String newPassword = ((EditText) findViewById(R.id.newPassword)).getText().toString().trim();
+                    if (!newPassword.equals(currentPassword)) {
+                        String confirmPassword = ((EditText) findViewById(R.id.confirmPassword)).getText().toString().trim();
+                        if (newPassword.equals(confirmPassword)) {
+                            db.changePassword(username, newPassword);
+                            SharedPreferences.Editor session = sharedpreferences.edit();
+                            session.clear();
+                            session.commit();
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            dialogInterface.dismiss();
+                            Toast.makeText(getApplicationContext(), "Reset Password Successful", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Passwords' fields doesn't match", Toast.LENGTH_SHORT).show();
+                            dialogInterface.dismiss();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "New password cannot be same as current password", Toast.LENGTH_SHORT).show();
+                        dialogInterface.dismiss();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Current Password is incorrect", Toast.LENGTH_SHORT).show();
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
+    }
+}
